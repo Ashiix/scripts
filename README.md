@@ -1,1 +1,1 @@
-A collection of Arch Linux scripts that make day-to-day life easier
+Collection of Arch Linux scripts to make day-to-day life easier
