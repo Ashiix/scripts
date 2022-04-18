@@ -1,0 +1,51 @@
+# Remote user to sign in with
+user=ash
+# Address of remote server
+server=ashiix.xyz
+# Path to remote webserver - Format: /x/y/z/
+webserver_path=/home/ash/html/
+# Name of folder in webserver to save files in - FOrmat: x OR x/y/z
+share_dir=share
+
+
+# Set remote path
+remote_path=$webserver_path$share_dir/
+
+# Check if file exists
+if [ ! -e $1 ] || [ ! $1 ]
+then
+    echo File not found
+    exit 2
+fi
+
+# Get file name
+file_name=$(basename $1)
+
+# Get file extension
+file_extension=$(echo "$file_name" | grep -E "(\\.[^.]+)$" -o)
+
+# Create temporary file
+tmp_file_dir=/tmp/$file_name
+cp $1 $tmp_file_dir
+
+# Copy file to tmp to create a metadata-free variant
+exiftool -m -q -q -all= -overwrite_original $tmp_file_dir
+
+# SHA hash of tmp file
+sha_hash=$(shasum $tmp_file_dir | grep -E "^\w+" -o)
+
+# Rename tmp file based on hash
+sha_file_name=$sha_hash$file_extension
+sha_file_dir=/tmp/$sha_file_name
+mv $tmp_file_dir $sha_file_dir
+
+# Upload file
+scp -P 727 $sha_file_dir $user@$server:$remote_path/$sha_file_name
+
+# Remove temporary file
+rm $sha_file_dir
+
+# Echo URL to the file for easy sharing
+echo https://$server/$share_dir/$sha_file_name
+
+exit 0
