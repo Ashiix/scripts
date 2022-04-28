@@ -6,7 +6,7 @@ server=ashiix.xyz
 port=727
 # Path to remote webserver - Format: /x/y/z/
 webserver_path=/home/ash/html/
-# Name of folder in webserver to save files in - FOrmat: x OR x/y/z
+# Name of folder in webserver to save files in - Format: x OR x/y/z
 share_dir=share
 
 
