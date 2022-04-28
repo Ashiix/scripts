@@ -2,6 +2,8 @@
 user=ash
 # Address of remote server
 server=ashiix.xyz
+# Port to connect to remote server via
+port=727
 # Path to remote webserver - Format: /x/y/z/
 webserver_path=/home/ash/html/
 # Name of folder in webserver to save files in - FOrmat: x OR x/y/z
@@ -28,7 +30,7 @@ file_extension=$(echo "$file_name" | grep -E "(\\.[^.]+)$" -o)
 tmp_file_dir=/tmp/$file_name
 cp $1 $tmp_file_dir
 
-# Copy file to tmp to create a metadata-free variant
+# Remove EXIF data from file
 exiftool -m -q -q -all= -overwrite_original $tmp_file_dir
 
 # SHA hash of tmp file
@@ -40,7 +42,7 @@ sha_file_dir=/tmp/$sha_file_name
 mv $tmp_file_dir $sha_file_dir
 
 # Upload file
-scp -P 727 $sha_file_dir $user@$server:$remote_path/$sha_file_name
+scp -P $port $sha_file_dir $user@$server:$remote_path/$sha_file_name
 
 # Remove temporary file
 rm $sha_file_dir
